@@ -91,6 +91,8 @@
 
 #! 18. Normalization and 3rd Normal Form
 
+# * Normalization is very important topic in interviews
+
 
 # *===============================================
 
