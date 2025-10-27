@@ -131,10 +131,90 @@ select employeeid,firstname,lastname from employees order by firstname desc;
 
 --*=====================================================================================
 
+--! 33. Hands -on SQL Joins
+--* Alter - add department id to employees table
+
+ALTER TABLE employees ADD COLUMN Departmentid INT;
+
+--* Update
+UPDATE employees SET Departmentid = 1 WHERE employeeid BETWEEN 1 AND 4;
+UPDATE employees SET Departmentid = 2 WHERE employeeid BETWEEN 5 AND 8;
+UPDATE employees SET Departmentid = 4 WHERE employeeid BETWEEN 9 AND 12;
+
+SELECT * FROM employees e;
+SELECT * FROM departments d;
+
+--* Join
+
+SELECT e.employeeid,
+       e.firstname,
+       e.departmentid AS Emp_tbl_dept_id,
+       d.departmentName,
+       d.departmentid
+FROM employees e
+left JOIN departments d
+  ON e.departmentid = d.departmentid
+ORDER BY employeeid ASC;
+
+--! Exercise
+
+--^ Req: list all employess that their departments already exist in the company
+
+--~ first method: (join): more efficient regarding performance
+
+SELECT e.firstname || ' ' || e.lastname AS employeeName, d."name" AS departName
+FROM employees e, departments d
+  WHERE d.departmentid = e.department_id;
+
+--~ or (same but different syntax)
+SELECT e.firstname || ' ' || e.lastname AS employeeName, d."name" AS departName
+FROM employees e
+INNER JOIN departments d
+  ON d.departmentid = e.department_id;
+
+
+--*============================================================================
+
+--! 34. SubQuery
+
+select * from departments d ;
+select * from employees e ;
+
+--* start by writing inner query
+--* outer query will execute after inner query
+
+--* use (in) when inner query return mulit-values
+select * from employees where departmentid in (select department_id from departments)
+
+--* use (=) when inner query return single value
+select * from employees where departmentid = (select department_id from departments = 1)
+
+
+--^ Req: list all employess that their departments already exist in the company
+
+--~ Second method, subquery: more complex ad less efficient
+
+SELECT e.firstname || ' ' || e.lastname AS fullname,
+       (SELECT d."name"
+        FROM departments d
+        WHERE d.departmentid = e.department_id) AS departName
+FROM employees e
+WHERE e.department_id IN (SELECT departmentid FROM departments);
+
+--*============================================================================
+
 --! 35. Union and Union ALL
 
+--^ Union: remove duplicates, so it's slower
+--~ example: if first name and lastname have same values
+select firstname as Name from employees
+union 
+select lastname as Name from employees;
 
-
+--^ Union all: doesn't remove duplicates
+select firstname as Name from employees
+union all
+select lastname as Name from employees;
 
 --*=====================================================================================
 
@@ -143,6 +223,28 @@ select employeeid,firstname,lastname from employees order by firstname desc;
 --* Used alot in report writing, data analysis and data engineering
 --* تجميع داتا
 
+select * from orders;
+
+--^ How many orders:
+
+--* count(orderid): exclude null values
+SELECT COUNT(orderid) FROM orders;  
+
+--* count(*): include null values
+SELECT COUNT(*) FROM orders;  
+
+--^ How many items got sold
+SELECT SUM(quantity) FROM order_details od; --* 12743
+
+SELECT ROUND(AVG(quantity), 2) FROM order_details;
+
+--^ min / max quantities
+SELECT MIN(quantity), MAX(quantity) FROM order_details;
+
+SELECT * FROM order_details;
+
+--^ Build a report to show the number of items sold (quantity) for each order.
+select orderid , sum(quantity) as items_sold_per_order from order_detai
 
 --*=====================================================================================
 
