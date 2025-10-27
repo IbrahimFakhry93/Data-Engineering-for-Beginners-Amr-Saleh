@@ -1,3 +1,10 @@
 {
-  "cSpell.ignoreWords": ["Duolingo"]
+  "cSpell.ignoreWords": [
+    "Duolingo",
+    "departmentid",
+    "employeeid",
+    "firstname",
+    "lastname",
+    "managerid"
+  ]
 }
