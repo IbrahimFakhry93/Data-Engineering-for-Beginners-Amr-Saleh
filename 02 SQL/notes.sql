@@ -156,6 +156,8 @@ left JOIN departments d
   ON e.departmentid = d.departmentid
 ORDER BY employeeid ASC;
 
+--* In industry, left join is more commonly used
+
 --! Exercise
 
 --^ Req: list all employess that their departments already exist in the company
@@ -252,3 +254,36 @@ select orderid , sum(quantity) as items_sold_per_order from order_detai
 
 --* let's say we have 3 departments in a company, and every department there are 10 employees with 10 salaries
 --* req: sort salaries for each department apart
+
+--? Example:
+select * from products p;
+--* products table: productname, supplier_id,categoryid,unit,price
+
+--^ req: sort the products so I have an order of prices (desc) per each category
+--* هاتلى ترتيب المنتجات من اعلى سعر لاقل سعر لكل كاتورجي
+
+select productname,categoryid,price ,rank() over(partition by categoryid order by price desc) as price_rank from products;  
+
+--*=====================================================================================
+--! 38 CTE
+
+--* improves readability 
+
+--~ CTE Method: (more readable)
+--^  create temporary result set of customer and their orders dates before 30 days
+with recent_orders as ( select customerid, orderdate from orders o where o.orderdate < current_date - interval '30 days') 
+select customerid , count(*) as order_count from recent_orders group by customerid;
+
+--~ subquery Method: (same result above but, less readable)
+
+select customerid , count(*) as order_count from ( select customerid, orderdate from orders o where o.orderdate < current_date - interval '30 days') as recent_orders group by customerid;
+
+--*=====================================================================================
+--! 39. SQL Indexing:
+--* index is like فهرس
+
+--* too many indexes can hurt performance and increase storage
+--*=====================================================================================
+
+
+--!  40. SQL Performance Tuning
