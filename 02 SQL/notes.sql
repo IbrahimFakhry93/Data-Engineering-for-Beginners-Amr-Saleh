@@ -276,6 +276,15 @@ select orderid , sum(quantity) as items_sold_per_order from order_details;
 
 --*=====================================================================================
 
+--! Coding Exercise 1: Top 5 employees by number of orders
+
+select * from orders;
+
+select e.firstname as emp_firstname,e.lastname as emp_lastname, count(o.orderid ) as no_orders from employees e ,orders o
+where e.employeeid =o.employeeid  group by e.employeeid  order by no_orders  desc limit 5;
+
+--*=====================================================================================
+
 --! 37 Window Functions
 
 --* window: to use subset of data 
@@ -320,6 +329,7 @@ rank() over(partition by e.department_id order by e.salary desc) as salary_rank 
 --*=====================================================================================
 --! 38 CTE
 
+--* it's like virtual table which has result set, it's given a name
 --* improves readability 
 
 --~ CTE Method: (more readable)
