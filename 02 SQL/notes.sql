@@ -326,6 +326,41 @@ rank() over(partition by e.department_id order by e.salary desc) as salary_rank 
 
 --^ Rank (ask chatgpt): skip the ranks when data is duplicated (ex. different products have same price)
 
+
+--*======================================================================================
+
+--! interview
+
+--! Comparison of RANK(), DENSE_RANK(), and ROW_NUMBER()
+
+--? General Idea
+--* All three are SQL window functions used to assign a ranking number to rows.
+--* They differ in how they handle ties (rows with the same ORDER BY value).
+
+--? RANK()
+--* Assigns the same rank to tied rows.
+--* Skips the next rank(s) after a tie.
+--* Example: salaries [7000, 6500, 6500, 6000]
+  --~ → RANK = [1, 2, 2, 4]
+
+--? DENSE_RANK()
+--* Assigns the same rank to tied rows.
+--* Does NOT skip the next rank (no gaps).
+--* Example: salaries [7000, 6500, 6500, 6000]
+  --! → DENSE_RANK = [1, 2, 2, 3]
+
+--? ROW_NUMBER()
+--* Always assigns a unique sequential number to each row.
+--* Ignores ties completely.
+--* Example: salaries [7000, 6500, 6500, 6000]
+  --~ → ROW_NUMBER = [1, 2, 3, 4]
+
+--? Key Learning Points
+--* Use RANK() when ties should share the same rank but gaps are acceptable.
+--* Use DENSE_RANK() when ties should share the same rank but no gaps are wanted.
+--* Use ROW_NUMBER() when you need a strict sequence (e.g., picking top N rows).
+
+
 --*=====================================================================================
 --! 38 CTE
 
@@ -342,6 +377,217 @@ select customerid , count(*) as order_count from recent_orders group by customer
 select customerid , count(*) as order_count from ( select customerid, orderdate from orders o where o.orderdate < current_date - interval '30 days') as recent_orders group by customerid;
 
 --*=====================================================================================
+
+--! Coding Exercise 2: Department Salary Rankings (Advanced - Real Interview Question)
+
+--& Department Salary Rankings (Advanced -- Real Interview Question)
+
+--? Don't be overwhelmed! This is an actual Data Engineer interview question.
+
+--^ Scenario:
+--* You're a data analyst at a growing company. The HR department needs a report showing:
+--* The top 2 highest--paid employees in each department
+--* Their names, salaries, and department names
+--* The ranking of each employee within their department
+
+--^ Your Task:
+--TODO : Write a SQL query using a Common Table Expression (CTE) to:
+--* Rank employees by salary within their department (highest to lowest)
+--* Filter to show only the top 2 earners per department
+--* Include these columns in your results:
+  --* employee_name
+  --* salary
+  --* dept_name
+
+--^ Tables Provided:
+
+CREATE TABLE salaries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    salary DECIMAL(10, 2),
+    dept_id INT
+);
+
+CREATE TABLE dept (
+    dept_id INT AUTO_INCREMENT PRIMARY KEY,
+    dept_name VARCHAR(100)
+);
+
+--? Solution:
+
+CREATE TABLE salaries (
+
+    id serial PRIMARY KEY,
+
+    employee_name VARCHAR(100),
+
+    salary DECIMAL(10, 2),
+
+    dept_id INT
+
+);
+
+select * from salaries;
+
+INSERT INTO salaries (employee_name, salary, dept_id) VALUES
+-- Sales
+('Ali Hassan',     5000.00, 1),
+('Mona Ibrahim',   4500.00, 1),
+('Samir Lotfy',    5200.00, 1),
+('Heba Mansour',   4800.00, 1),
+
+-- IT
+('Karim Youssef',  6000.00, 2),
+('Sara Adel',      5500.00, 2),
+('Mostafa Kamel',  6200.00, 2),
+('Aya Tarek',      5800.00, 2),
+
+-- HR
+('Hany Nabil',     4000.00, 3),
+('Nora Fathy',     4200.00, 3),
+('Mahmoud Selim',  3900.00, 3),
+('Rania Saad',     4300.00, 3),
+
+-- Finance
+('Omar Khaled',    7000.00, 4),
+('Laila Mostafa',  6800.00, 4),
+('Ahmed Fouad',    7200.00, 4),
+('Dalia Hussein',  6900.00, 4),
+
+-- Marketing
+('Yasser Mahmoud', 4800.00, 5),
+('Dina Samir',     5200.00, 5),
+('Khaled Amin',    5100.00, 5),
+('Mariam Hossam',  5300.00, 5);
+
+
+--!delete from salaries;
+
+select * from salaries;
+
+CREATE TABLE dept (
+
+    dept_id serial PRIMARY KEY,
+
+    dept_name VARCHAR(100)
+
+);
+
+select * from dept;
+
+
+INSERT INTO dept (dept_name) VALUES
+('Sales'),
+('IT'),
+('HR'),
+('Finance'),
+('Marketing');
+
+
+
+select * from dept;
+
+with ranked_emp as (select s.employee_name , s.salary , d.dept_name, rank() over(partition by d.dept_id order by s.salary desc) as rank_salary from salaries s join dept d on s.dept_id = d.dept_id)
+
+select * from ranked_emp where rank_salary <=2;
+
+
+--*=======================================================================================
+
+--! Amr Saleh Solution:
+
+--& Department Salary Rankings (Interview Question)
+
+--^ Don't be overwhelmed! This is an actual Data Engineer interview question.
+--^ 🚨 Even senior engineers Google syntax sometimes.
+--^ The important part is understanding the logic. You’ve got this!
+
+--? Solution
+WITH RankedSalaries AS (
+    SELECT
+        s.employee_name,
+        s.salary,
+        d.dept_name,
+        ROW_NUMBER() OVER (
+            PARTITION BY s.dept_id
+            ORDER BY s.salary DESC
+        ) AS salary_rank
+    FROM salaries s
+    JOIN dept d ON s.dept_id = d.dept_id
+)
+SELECT
+    employee_name,
+    salary,
+    dept_name
+FROM RankedSalaries
+WHERE salary_rank <= 2;
+
+--? Step-by-Step Explanation
+
+--^ CTE Definition (RankedSalaries)
+--* Joins salaries and dept tables to get department names.
+--~ Uses ROW_NUMBER() with:
+--*    PARTITION BY dept_id → Groups employees by department.
+--*    ORDER BY salary DESC → Ranks salaries from highest to lowest.
+--* Assigns a salary_rank to each employee within their department.
+
+--^ Main Query
+--* Filters to keep only employees with salary_rank <= 2 (top 2 per department).
+--* Orders results by dept_name and salary_rank for readability.
+
+--? Key Learning Points
+--* CTEs help organize complex queries into logical steps.
+--* Window Functions (ROW_NUMBER()) rank data within groups.
+--* PARTITION BY divides data into departments before ranking.
+--* ORDER BY salary DESC ensures highest salaries get rank 1.
+
+--? Pro Tip
+--! Interviewers often ask: "How would you handle ties (same salary)?"
+--* ➡ Discuss RANK() vs DENSE_RANK() vs ROW_NUMBER()!
+
+
+--*=============================================================================================================
+
+--! Very important 
+
+--! Logical SQL Execution Order
+
+--? General Concept
+--* SQL does not execute clauses in the order you write them.
+--* Instead, it follows a logical sequence of steps.
+
+--? Execution Steps
+--* FROM / JOIN → build the raw dataset.
+--* WHERE → filter rows (only on raw columns, not aggregates or window functions).
+--* GROUP BY → group rows if needed.
+--* HAVING → filter groups.
+--* WINDOW functions (e.g., RANK()) → calculated after WHERE/HAVING, on the final row set.
+--* SELECT → return chosen columns (including window function results).
+--* ORDER BY → sort the final output.
+--* LIMIT / OFFSET → trim rows.
+
+--? Why This Matters
+--* RANK() is a window function, so it’s only available after step 5.
+--* WHERE filtering happens at step 2.
+--* That’s why you cannot write:
+   WHERE rank_salary <= 2
+   in the same query — because rank_salary doesn’t exist yet at that stage.
+
+--? The Trick
+--* Wrap your ranked query in a subquery or CTE → this turns the ranked result set into a “virtual table.”
+--* Then you can filter on rank_salary in the outer query, because now it’s just a normal column.
+
+--? Hint for Practice
+--* Think of it as two passes:
+   1. First pass → assign ranks.
+   2. Second pass → filter on those ranks. 
+
+
+
+ 
+ 
+--*====================================================================================
+
 --! 39. SQL Indexing:
 --* index is like فهرس
 
@@ -350,3 +596,6 @@ select customerid , count(*) as order_count from ( select customerid, orderdate 
 
 
 --!  40. SQL Performance Tuning
+
+
+--*=================================================================
