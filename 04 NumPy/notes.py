@@ -209,8 +209,11 @@ y = np.linspace(1, 100, 11)
 print(y, "\n")
 arr = np.array([[1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13, 14]])
 print("arr", "\n", arr, "\n")
+
 # arr.reshape(Rows,columns) changes the array size (before 7*2=14, after must equal 14)
-print(arr.reshape(7, 2))
+# reshape: allows us to reshape the array without changing the elements making up the array
+
+print(arr.reshape(7, 2))  # ~ reshape receives tuple is called: tuple shape
 
 print("transposed", "\n", np.transpose(arr))
 

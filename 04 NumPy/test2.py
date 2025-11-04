@@ -1,7 +1,16 @@
 import numpy as np
 
-r = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
-print("r", "\n", r, "\n")
+tree_census = np.array(
+    [
+        [1001, 501, 12, 30],
+        [1002, 502, 15, 45],
+        [1003, 501, 10, 25],
+        [1004, 503, 20, 50],
+        [1005, 502, 18, 40],
+    ]
+)
 
-r1 = np.insert(r, 2, [[11, 12, 13, 14]], axis=0)
-print("r1", "\n", r1, "\n")
+# Select all rows of block ID data from the second column
+block_ids = tree_census[:, 1]
+
+print(block_ids)
