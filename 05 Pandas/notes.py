@@ -164,7 +164,7 @@ print(df.isna().sum())
 
 
 # & Drop rows with missing data
-# ^ drop row with null or missing values
+# ^ drop row with null or missing values (just a display, won't change original df)
 # * df.dropna()
 
 print("\n🧹 After dropping missing rows:")
@@ -239,6 +239,8 @@ print("🔸 Original Budgets:\n", df_projects, "\n")
 
 # ^ Fill missing budgets with mean values using (  .fillna(mean_value)  )
 
+# ~ calculate mean of the column
+# ~ access column by dataframe_name["col name"] then apply mean function on column set
 mean_budget = df_projects["Budget_kUSD"].mean()
 print(mean_budget)
 

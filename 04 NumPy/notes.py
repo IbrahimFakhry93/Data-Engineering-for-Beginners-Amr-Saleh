@@ -273,3 +273,12 @@ print(a)
 # * Try to print only 11,12,16,17
 b = a[2:4, 0:2]
 print(b)
+
+
+# *===============================
+
+# * repeat without axis
+# * concatenate at axis = 0
+# * flat
+# * hstack
+# * append axis = 1
