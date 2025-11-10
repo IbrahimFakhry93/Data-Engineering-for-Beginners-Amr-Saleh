@@ -71,3 +71,7 @@ plt.show()
 # *==============================================================
 
 #! 90. Visualise Top Countries by Shipping Cost
+
+# ^ explore histogram , study more about histogram
+
+# *==============================================================
