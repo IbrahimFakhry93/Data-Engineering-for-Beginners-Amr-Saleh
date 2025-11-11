@@ -207,6 +207,30 @@ print("🔸 Experienced Employees:\n", df[df["Experience_Years"] > 5], "\n")
 # ^ Filter: Working at Kiwilytics
 print("🔸 Kiwilytics Team:\n", df[df["Company"] == "Kiwilytics"], "\n")
 
+# ^=================================================
+# & Difference between df[] and df.loc[]
+
+# ? df[] is a shortcut, mostly for selecting columns or filtering rows.
+df["ShippingCompany"]  # * select one column
+df[["OrderID", "DeliveryDays"]]  # * select multiple columns
+df[df["DeliveryDays"] <= 50]  # * filter rows (returns all columns)
+
+# ? df.loc[] is label-based indexing, lets you specify both rows AND columns.
+df.loc[df["DeliveryDays"] <= 50, ["OrderID", "DeliveryDays"]]
+# ~   # filter rows where DeliveryDays <= 50 AND show only those two columns
+
+# * df.loc[0:5, 'OrderID']
+# ~   # select OrderID column for rows 0 through 5
+
+# ? Key Difference:
+# * df[] → quick shortcut, limited to columns or simple row filters.
+# * df.loc[] → full control: filter rows AND choose specific columns at once.
+
+# ? Memory Trick:
+# * df[] = shortcut
+# * df.loc[] = full address (rows + columns)
+
+
 # *=========================================================================================
 
 #! 73. Standardize Dataframe and Add Columns
