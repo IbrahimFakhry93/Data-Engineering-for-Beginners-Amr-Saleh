@@ -4,7 +4,7 @@
 
 # ^ open: virtual machine
 
-# * cmd -> write: airflow webserver
+# * cmd on vm -> write: airflow webserver
 # * this will activate the webserver, so we can access airflow on our local browser or on the browser on the machine
 
 # * webserver is the UI which by it, we can access airflow
@@ -14,7 +14,7 @@
 # * because the machine configuration that the port is external connected to the other port (or port of th emachine not sure)
 # * so we can access the both on any browser locally or on vm machine
 
-# * write:localhost:8080
+# * write on browser:localhost:8080
 # * it will open: airflow on the vm machine not on the local machine because the two ports are connected
 
 # * login form: write the username: kiwilytics and the provided password

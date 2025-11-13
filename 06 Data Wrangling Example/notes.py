@@ -229,22 +229,53 @@ df.head()
 
 # *===============================================================================================
 
+#! 82. Grouping Data for Wrangling Problem
+
+#^ Calculate average shipping cost by a shipping company
+
+avg_shipping_by_company = df.groupby("ShippingCompany")['ShippingCost'].mean()
+print("📊 Avg Shipping Cost by Company:")
+print(avg_shipping_by_company)
+
+#*===============================================================================================
+#! 83. Export Data and Reporting for Wrangling Problem
+
+df.to_csv("cleaned_orders_final.csv)",index=False)
+
+# Final summary
+print("\n✅ Final Dataset Snapshot:")
+print(df.head())
+
+print("\n📈 Delivery Status Breakdown:")
+print(df['DeliveryStatus'].value_counts())
 
 
-# no_ship_comp = df['ShippingCompany'].value_counts()
-# df['ShippingCompany'] → selects the column with shipping company names.
+print("\n🌎 Orders by Country:")
+print(df['ShipCountry'].value_counts())
 
-# .value_counts() → counts how many times each unique company appears.
+print("\n🌎 Orders by City:")
+print(df['ShipCity'].value_counts())
 
-# Result: a Series showing frequency of orders handled by each shipping company.
+#^====================================================
 
-# ✅ Business interpretation
-# This expresses market share of shipping companies in your dataset:
+print("\n📦 Top 3 Shipping Companies:")
 
-# Which shipping company is used most often.
+print(df['ShippingCompany'].value_counts().head(3))
 
-# Relative workload distribution among carriers.
+#* no_ship_comp = df['ShippingCompany'].value_counts()
+ df['ShippingCompany']  #* → selects the column with shipping company names.
 
-# Potential dependency on one provider (risk if they fail).
+#* .value_counts() → counts how many times each unique company appears.
 
-# Opportunities to negotiate better rates with high‑volume partners.
+#* Result: a Series showing frequency of orders handled by each shipping company.
+
+#? ✅ Business interpretation
+# ^This expresses market share of shipping companies in your dataset:
+
+# *Which shipping company is used most often.
+
+# *Relative workload distribution among carriers.
+
+# *Potential dependency on one provider (risk if they fail).
+
+# *Opportunities to negotiate better rates with high‑volume partners.
