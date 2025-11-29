@@ -11,7 +11,7 @@
 # * to view our DAGS, run dag, pause dag
 
 # * open any browser on your local machine not necessary on vm machine
-# * because the machine configuration that the port is external connected to the other port (or port of th emachine not sure)
+# * because the machine configuration that the port is external connected to the other port (or port of the machine not sure)
 # * so we can access the both on any browser locally or on vm machine
 
 # * write on browser:localhost:8080
